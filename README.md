@@ -1,0 +1,1 @@
+# satoshi-dice-game
