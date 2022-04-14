@@ -1,0 +1,13 @@
+{
+  "properties": [
+    {
+      "name": "MNEMONIC_CODE",
+      "type": "java.lang.String",
+      "description": "Description for MNEMONIC_CODE."
+    },
+    {
+      "name": "wallet.creation.time",
+      "type": "java.lang.Long",
+      "description": "Description for wallet.creation.time."
+    }
+  ] }
