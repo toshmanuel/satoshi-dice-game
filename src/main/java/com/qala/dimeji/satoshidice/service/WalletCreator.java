@@ -1,9 +1,13 @@
 package com.qala.dimeji.satoshidice.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.bitcoinj.core.BlockChain;
 import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.params.MainNetParams;
+import org.bitcoinj.core.PeerGroup;
+import org.bitcoinj.core.listeners.DownloadProgressTracker;
 import org.bitcoinj.script.Script;
+import org.bitcoinj.store.BlockStoreException;
+import org.bitcoinj.store.MySQLFullPrunedBlockStore;
 import org.bitcoinj.wallet.DeterministicSeed;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.bitcoinj.wallet.Wallet;
@@ -17,13 +21,23 @@ public class WalletCreator {
     @Autowired
     private ConfigFile configFile;
 
-    public Wallet createWallet(NetworkParameters parameters, Script.ScriptType scriptType) throws UnreadableWalletException {
+    public Wallet createWallet(NetworkParameters parameters, Script.ScriptType scriptType) throws UnreadableWalletException, BlockStoreException {
         DeterministicSeed seed = new DeterministicSeed(configFile.getMnemonicCode(), null, "", configFile.getCreationTime());
         Wallet wallet = Wallet.fromSeed(parameters, seed, scriptType);
-
-        log.info("wallet info ->{}", wallet);
-        log.info("wallet seed info ->{}", wallet.getKeyChainSeed().getMnemonicCode());
-        log.info("wallet seed info ->{}", wallet.getKeyChainSeed().getCreationTimeSeconds());
+        BlockChain chain = new BlockChain(parameters, wallet, new MySQLFullPrunedBlockStore(
+                parameters,
+                10,
+                configFile.getLedgerHost(),
+                configFile.getLedgerName(),
+                configFile.getLedgerUser(),
+                configFile.getLedgerPassword())
+        );
+        log.info("chain is ->{}", chain);
+        PeerGroup peerGroup = new PeerGroup(parameters, chain);
+//        peerGroup.connectTo(new InetSocketAddress(8080));
+        peerGroup.addWallet(wallet);
+        peerGroup.start();
+        peerGroup.startBlockChainDownload(new DownloadProgressTracker());
 
         return wallet;
     }

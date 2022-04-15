@@ -11,12 +11,13 @@ import java.time.LocalDateTime;
 @Document
 @Getter
 @Setter
-
 public class Stake {
     @Id
     private String id;
-    private String address;
+    private String payingAddress;
+    private String serverAddress;
     private BigDecimal stakeAmount;
     private LocalDateTime dateCreated;
     private StakeStatus status;
+
 }
