@@ -14,6 +14,8 @@ import org.bitcoinj.wallet.Wallet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.InetSocketAddress;
+
 @Service
 @Slf4j
 public class WalletCreator {
@@ -32,11 +34,12 @@ public class WalletCreator {
                 configFile.getLedgerUser(),
                 configFile.getLedgerPassword())
         );
-        log.info("chain is ->{}", chain);
+        log.info("chain is ->{}", chain.getClass());
         PeerGroup peerGroup = new PeerGroup(parameters, chain);
-//        peerGroup.connectTo(new InetSocketAddress(8080));
+//        peerGroup.connectToLocalHost();
         peerGroup.addWallet(wallet);
         peerGroup.start();
+        peerGroup.connectTo(new InetSocketAddress("localhost", 3002));
         peerGroup.startBlockChainDownload(new DownloadProgressTracker());
 
         return wallet;
