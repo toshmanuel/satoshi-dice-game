@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @Slf4j
@@ -28,13 +29,15 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Map stake(StakeRequest request){
-        String url = "https://api.blockcypher.com/v1/btc/test3/txs/"+ request.getTransactionHash();
+        if(request.getNumberPicked() < 1 || request.getNumberPicked() > 100){
+            throw new IllegalArgumentException("Enter number between 1 and 100 to play");
+        }
 
+        String url = "https://api.blockcypher.com/v1/btc/test3/txs/"+ request.getTransactionHash();
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.add("user-agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
 
         ResponseEntity<Map> res = restTemplate.exchange(url, HttpMethod.GET, entity, Map.class);
@@ -45,7 +48,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException {
+    public ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException {
         Wallet wallet = walletCreator.createWallet(RegTestParams.get(), Script.ScriptType.P2WPKH);
         Address address = wallet.freshReceiveAddress();
         Address currentAddress = wallet.currentReceiveAddress();

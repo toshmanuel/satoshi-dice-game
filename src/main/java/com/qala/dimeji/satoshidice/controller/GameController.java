@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/api/v1/game")
@@ -27,7 +28,7 @@ public class GameController {
         try {
             ApiResponse response = gameService.generateAddressToPay();
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (UnreadableWalletException | BlockStoreException e) {
+        } catch (UnreadableWalletException | BlockStoreException | ExecutionException | InterruptedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

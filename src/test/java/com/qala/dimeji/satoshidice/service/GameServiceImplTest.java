@@ -9,6 +9,7 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +22,7 @@ class GameServiceImplTest {
     GameService gameService;
 
     @Test
-    void stake() throws UnreadableWalletException, BlockStoreException {
+    void stake() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException {
 //      gameService.stake(null);
       gameService.generateAddressToPay();
     }

@@ -7,9 +7,10 @@ import org.bitcoinj.wallet.UnreadableWalletException;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public interface GameService {
-    ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException;
+    ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException;
     Map stake(StakeRequest request) throws NoSuchAlgorithmException, UnreadableWalletException;
     ApiResponse play();
 }

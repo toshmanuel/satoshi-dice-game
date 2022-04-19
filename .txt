@@ -1,0 +1,7 @@
+1 - I want to create a wallet for my server
+2 - Generate different addresses when a player call the generate address url
+3 - Allow them to pay into the address generated
+4 - Let them stake base on the amount paid into the address
+5 - Confirm the payment has been made using a blockexplorer using the txhash .
+6 - check the address they provided when they are staking if it matches the address in the transaction object
+7 - if the win I pay them back the 150% of the amount they staked
