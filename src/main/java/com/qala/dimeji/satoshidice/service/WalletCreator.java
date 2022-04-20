@@ -1,10 +1,7 @@
 package com.qala.dimeji.satoshidice.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bitcoinj.core.BlockChain;
-import org.bitcoinj.core.NetworkParameters;
-import org.bitcoinj.core.Peer;
-import org.bitcoinj.core.PeerGroup;
+import org.bitcoinj.core.*;
 import org.bitcoinj.core.listeners.DownloadProgressTracker;
 import org.bitcoinj.script.Script;
 import org.bitcoinj.store.BlockStoreException;
@@ -15,8 +12,8 @@ import org.bitcoinj.wallet.Wallet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.net.InetSocketAddress;
-import java.util.List;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.ExecutionException;
 
 @Service
@@ -26,7 +23,7 @@ public class WalletCreator {
     @Autowired
     private ConfigFile configFile;
 
-    public Wallet createWallet(NetworkParameters parameters, Script.ScriptType scriptType) throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException {
+    public Wallet createWallet(NetworkParameters parameters, Script.ScriptType scriptType) throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException, UnknownHostException {
         DeterministicSeed seed = new DeterministicSeed(configFile.getMnemonicCode(), null, "", configFile.getCreationTime());
         Wallet wallet = Wallet.fromSeed(parameters, seed, scriptType);
         BlockChain chain = new BlockChain(parameters, wallet, new MySQLFullPrunedBlockStore(
@@ -37,13 +34,28 @@ public class WalletCreator {
                 configFile.getLedgerUser(),
                 configFile.getLedgerPassword())
         );
-        log.info("chain is ->{}", chain.getClass());
         PeerGroup peerGroup = new PeerGroup(parameters, chain);
+        peerGroup.addAddress(new PeerAddress(parameters, InetAddress.getLocalHost()));
+        chain.addWallet(wallet);
         peerGroup.addWallet(wallet);
+        DownloadProgressTracker blockList = new DownloadProgressTracker() {
+            @Override
+            public void doneDownload() {
+                System.out.println("Blockchain download completed!!!");
+            }
+        };
         peerGroup.start();
         peerGroup.connectToLocalHost();
-        List<Peer> peers = peerGroup.waitForPeers(1).get();
-        peerGroup.startBlockChainDownload(new DownloadProgressTracker());
+        peerGroup.startBlockChainDownload(blockList);
+        System.out.println("I think I got here----- Line 51");
+//        blockList.await();
+//        System.out.println("I think I got here----- Line 53");
+        peerGroup.waitForPeers(1).get();
+        System.out.println("I think I got here----- Line 55");
+        Peer peer = peerGroup.getConnectedPeers().get(0);
+        System.out.println("I think I got here----- Line 57");
+        System.out.println("this is a peer");
+        System.out.println(peer);
 //        peerGroup.connectTo(new InetSocketAddress("localhost", 18444));
 
         return wallet;

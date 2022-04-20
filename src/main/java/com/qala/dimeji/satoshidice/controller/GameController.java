@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -28,7 +29,7 @@ public class GameController {
         try {
             ApiResponse response = gameService.generateAddressToPay();
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (UnreadableWalletException | BlockStoreException | ExecutionException | InterruptedException e) {
+        } catch (UnknownHostException | UnreadableWalletException | BlockStoreException | ExecutionException | InterruptedException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -43,4 +44,5 @@ public class GameController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
         }
     }
+//    e946be7d64161944733bacca743c803843b3f01af7895811b04a7b5fb739cc81
 }

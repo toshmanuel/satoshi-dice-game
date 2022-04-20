@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
@@ -22,7 +23,7 @@ class GameServiceImplTest {
     GameService gameService;
 
     @Test
-    void stake() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException {
+    void stake() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException, UnknownHostException {
 //      gameService.stake(null);
       gameService.generateAddressToPay();
     }

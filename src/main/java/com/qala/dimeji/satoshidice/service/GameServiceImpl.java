@@ -4,6 +4,7 @@ import com.qala.dimeji.satoshidice.dto.request.StakeRequest;
 import com.qala.dimeji.satoshidice.dto.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.Transaction;
 import org.bitcoinj.params.RegTestParams;
 import org.bitcoinj.params.TestNet3Params;
 import org.bitcoinj.script.Script;
@@ -15,6 +16,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.UnknownHostException;
 import java.security.SecureRandom;
 import java.util.Collections;
 import java.util.Map;
@@ -48,7 +50,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException {
+    public ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException, UnknownHostException {
         Wallet wallet = walletCreator.createWallet(RegTestParams.get(), Script.ScriptType.P2WPKH);
         Address address = wallet.freshReceiveAddress();
         Address currentAddress = wallet.currentReceiveAddress();
