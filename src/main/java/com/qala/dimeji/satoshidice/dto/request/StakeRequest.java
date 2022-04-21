@@ -7,4 +7,5 @@ public class StakeRequest {
     private String address;
     private String transactionHash;
     private Integer numberPicked;
+    private String message;
 }

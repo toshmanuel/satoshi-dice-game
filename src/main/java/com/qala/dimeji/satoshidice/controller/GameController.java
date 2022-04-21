@@ -9,12 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 @RestController
@@ -34,15 +33,12 @@ public class GameController {
         }
     }
 
-
-    @GetMapping("/stake")
+    @PostMapping("/stake")
     public ResponseEntity<?> stake(StakeRequest request) {
         try {
-            Map response = gameService.stake(request);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (NoSuchAlgorithmException | UnreadableWalletException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<>(gameService.stake(request), HttpStatus.OK);
+        } catch (ExecutionException | InterruptedException | IllegalStateException e) {
+            return new ResponseEntity<>(new ApiResponse(e.getLocalizedMessage(), "Failed", 400), HttpStatus.BAD_REQUEST);
         }
     }
-//    e946be7d64161944733bacca743c803843b3f01af7895811b04a7b5fb739cc81
 }

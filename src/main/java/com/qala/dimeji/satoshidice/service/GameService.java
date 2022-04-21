@@ -6,12 +6,10 @@ import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.wallet.UnreadableWalletException;
 
 import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
+
 import java.util.concurrent.ExecutionException;
 
 public interface GameService {
     ApiResponse generateAddressToPay() throws UnreadableWalletException, BlockStoreException, ExecutionException, InterruptedException, UnknownHostException;
-    Map stake(StakeRequest request) throws NoSuchAlgorithmException, UnreadableWalletException;
-    ApiResponse play();
+    ApiResponse stake(StakeRequest request) throws ExecutionException, InterruptedException;
 }
