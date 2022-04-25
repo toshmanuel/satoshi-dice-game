@@ -3,6 +3,7 @@ package com.qala.dimeji.satoshidice.controller;
 import com.qala.dimeji.satoshidice.dto.request.StakeRequest;
 import com.qala.dimeji.satoshidice.dto.response.ApiResponse;
 import com.qala.dimeji.satoshidice.service.GameService;
+import org.bitcoinj.core.InsufficientMoneyException;
 import org.bitcoinj.store.BlockStoreException;
 import org.bitcoinj.wallet.UnreadableWalletException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class GameController {
     public ResponseEntity<?> stake(StakeRequest request) {
         try {
             return new ResponseEntity<>(gameService.stake(request), HttpStatus.OK);
-        } catch (ExecutionException | InterruptedException | IllegalStateException e) {
+        } catch (InsufficientMoneyException | ExecutionException | InterruptedException | IllegalStateException e) {
             return new ResponseEntity<>(new ApiResponse(e.getLocalizedMessage(), "Failed", 400), HttpStatus.BAD_REQUEST);
         }
     }
